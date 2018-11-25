@@ -1,114 +1,100 @@
 <html>
 <head>
-  <title>webbshop</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
   <style>
-    ul {
-      border: thin dotted gray;
-      padding: 2em;
-      margin: 1em;
+    body {
+      width: 100%;
     }
-    li {
-      background-color: pink;
-      color: white;
-      font-family: 'verdana';
-      font-weight: 700;
-      border-radius: 8px;
+    .product-info, .varukorg {
+      border-radius: 4px;
+      background-color: rgba(55,100,255, 0.3);
+      margin: 1em;
       padding: 1em;
-      min-height: 100px;
-      margin: 1em;
+      width: 66%;
     }
-    ul.varukorg li {
-      background-color: wheat;
+    .varukorg {
+      border: 10px solid #123;
     }
-    .price {
-      color: yellow;
-      font-size: 1.5em;
-      text-shadow: 2px 2px 3px red;
-    }
-    div {
-      display: flex;
-    }
-    product-list, varu-korg {
-      flex: 0 1 auto;
+    .productList {
+      border: 2px dashed red;
+      padding: 1em 2em;
     }
   </style>
 </head>
 <body>
-  <div id="app">
-    <product-list :products=products
-    v-on:atc='varukorg.push(product)'>
+  <div id="output">
+    <product-list>
+      <product-info
+        v-for='product in products'
+        v-bind:key='product.id'
+        v-bind:product='product'
+        v-on:add-to-cart='shopCart.push(product)'>
+      </product-info>
     </product-list>
-    <varu-korg :varukorg=varukorg></varu-korg>
+    <shop-cart>
+      <product-info
+        v-for='product in shopCart'
+        v-bind:key='product.id'
+        v-bind:product='product'>
+      </product-info>
+    </shop-cart>
+
   </div>
 </body>
 </html>
 <script>
 
-  var productList = Vue.component('product-list', {
-    props: [
-      'products'
-    ],
+  Vue.component('product-info',{
+    props: ['product'],
     template: `
-    <ul>
-      <li v-for='product,index in products' :key='index'>
-        {{ product.name }}
-        <span class='price'>
-          {{ product.price }} :-
-        </span>
-        <button @click="$emit('atc')">Add to cart</button>
-      </li>
-    </ul>
+      <div class='product-info'>
+        <h1>
+          {{ product.name }}
+        </h1>
+        <p><span>
+          {{ product.consumerPrice }}
+        </span></p>
+        <button
+          v-on:click="$emit('add-to-cart')">
+          Add to cart
+        </button>
+
+        <p><span>
+          {{ product.description }}
+        </span></p>
+      </div>
+    `
+  });
+
+  Vue.component('shop-cart', {
+    template: `
+      <div class = "varukorg">
+        <slot>
+        </slot>
+      </div>
     `
   })
 
-  var varukorg = Vue.component('varu-korg',{
-    props: [
-      'varukorg'
-    ],
+  Vue.component('product-list', {
     template: `
-    <ul class='varukorg' v-if="varukorg.length>0">
-      <p>Total kostnad</p>
-      <li v-for='vara,index in varukorg' :key='index'>
-        {{ vara.name }}
-        <span class='price'>
-          {{ vara.price }} :-
-        </span>
-        <button @click="rfc(vara)">X</button>
-      </li>
-    </ul>
-    `,
-    methods: {
-    }
+      <div class = "productList">
+        <slot>
+        </slot>
+      </div>
+    `
   })
 
   const app = new Vue({
-    el: '#app',
+    el: '#output',
     data: {
-      products: [
-        {
-          id: 1,
-          name: "Lax",
-          price: 99
-        },
-        {
-          id: 2,
-          name: "Torsk",
-          price: 179
-        },
-        {
-          id: 3,
-          name: "Kolja",
-          price: 79
-        }
-      ],
-      varukorg: []
+      products: null,
+      shopCart: []
     },
-    components: {
-      productList,
-      varukorg
-    },
-
-  })
+    mounted () {
+       axios
+         .get('https://www.hulabeck.se/html/temp/products.json')
+         .then(response => (this.products = response.data.products))
+    }
+});
 </script>
