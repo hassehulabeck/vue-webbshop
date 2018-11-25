@@ -1,0 +1,114 @@
+<html>
+<head>
+  <title>webbshop</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <style>
+    ul {
+      border: thin dotted gray;
+      padding: 2em;
+      margin: 1em;
+    }
+    li {
+      background-color: pink;
+      color: white;
+      font-family: 'verdana';
+      font-weight: 700;
+      border-radius: 8px;
+      padding: 1em;
+      min-height: 100px;
+      margin: 1em;
+    }
+    ul.varukorg li {
+      background-color: wheat;
+    }
+    .price {
+      color: yellow;
+      font-size: 1.5em;
+      text-shadow: 2px 2px 3px red;
+    }
+    div {
+      display: flex;
+    }
+    product-list, varu-korg {
+      flex: 0 1 auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <product-list :products=products
+    v-on:atc='varukorg.push(product)'>
+    </product-list>
+    <varu-korg :varukorg=varukorg></varu-korg>
+  </div>
+</body>
+</html>
+<script>
+
+  var productList = Vue.component('product-list', {
+    props: [
+      'products'
+    ],
+    template: `
+    <ul>
+      <li v-for='product,index in products' :key='index'>
+        {{ product.name }}
+        <span class='price'>
+          {{ product.price }} :-
+        </span>
+        <button @click="$emit('atc')">Add to cart</button>
+      </li>
+    </ul>
+    `
+  })
+
+  var varukorg = Vue.component('varu-korg',{
+    props: [
+      'varukorg'
+    ],
+    template: `
+    <ul class='varukorg' v-if="varukorg.length>0">
+      <p>Total kostnad</p>
+      <li v-for='vara,index in varukorg' :key='index'>
+        {{ vara.name }}
+        <span class='price'>
+          {{ vara.price }} :-
+        </span>
+        <button @click="rfc(vara)">X</button>
+      </li>
+    </ul>
+    `,
+    methods: {
+    }
+  })
+
+  const app = new Vue({
+    el: '#app',
+    data: {
+      products: [
+        {
+          id: 1,
+          name: "Lax",
+          price: 99
+        },
+        {
+          id: 2,
+          name: "Torsk",
+          price: 179
+        },
+        {
+          id: 3,
+          name: "Kolja",
+          price: 79
+        }
+      ],
+      varukorg: []
+    },
+    components: {
+      productList,
+      varukorg
+    },
+
+  })
+</script>
