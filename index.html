@@ -2,6 +2,7 @@
 <head>
   <title>webbshop</title>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
 
   <style>
     ul {
@@ -10,13 +11,13 @@
       margin: 1em;
     }
     li {
-      background-color: pink;
+      background-color: silver;
       color: white;
       font-family: 'verdana';
       font-weight: 700;
       border-radius: 8px;
       padding: 1em;
-      min-height: 100px;
+      min-height: 50px;
       margin: 1em;
     }
     ul.varukorg li {
@@ -34,22 +35,55 @@
       flex: 0 1 auto;
     }
   </style>
+
+
 </head>
 <body>
   <div id="app">
-    <product-list :products=products
-    v-on:atc='varukorg.push(product)'>
-    </product-list>
-    <varu-korg :varukorg=varukorg></varu-korg>
+    <product-list></product-list>
+    <varu-korg></varu-korg>
   </div>
 </body>
 </html>
 <script>
+  const store = new Vuex.Store({
+    state: {
+      products: [
+        {
+          id: 1,
+          name: "Guld",
+          price: 499
+        },
+        {
+          id: 2,
+          name: "Silver",
+          price: 179
+        },
+        {
+          id: 3,
+          name: "Brons",
+          price: 49
+        }
+      ],
+      varukorg: [],
+      totalCost: 0
+    },
+    mutations: {
+      atc(state, product) {
+        state.varukorg.push(product)
+      },
+      rfc(state, index) {
+        state.varukorg.splice(index, 1)
+      }
+    }
+  })
 
   var productList = Vue.component('product-list', {
-    props: [
-      'products'
-    ],
+    computed: {
+      products() {
+        return store.state.products
+      }
+    },
     template: `
     <ul>
       <li v-for='product,index in products' :key='index'>
@@ -57,58 +91,52 @@
         <span class='price'>
           {{ product.price }} :-
         </span>
-        <button @click="$emit('atc')">Add to cart</button>
+        <button @click="atc(product)">Add to cart</button>
       </li>
     </ul>
-    `
+    `,
+    methods: {
+      atc(product) {
+        store.commit('atc', product)
+      }
+    }
   })
 
   var varukorg = Vue.component('varu-korg',{
-    props: [
-      'varukorg'
-    ],
+    computed: {
+      varukorg() {
+        return store.state.varukorg
+      },
+      totalCost() {
+        return store.state.varukorg.reduce(function(accumulator, current) {
+          return accumulator + current.price
+        }, 0)
+      }
+    },
     template: `
     <ul class='varukorg' v-if="varukorg.length>0">
-      <p>Total kostnad</p>
+      <p>Total kostnad: {{ totalCost }} </p>
       <li v-for='vara,index in varukorg' :key='index'>
         {{ vara.name }}
         <span class='price'>
           {{ vara.price }} :-
         </span>
-        <button @click="rfc(vara)">X</button>
+        <button @click="rfc(index)">X</button>
       </li>
     </ul>
     `,
     methods: {
+      rfc(index) {
+        store.commit('rfc', index)
+      }
     }
   })
 
   const app = new Vue({
     el: '#app',
-    data: {
-      products: [
-        {
-          id: 1,
-          name: "Lax",
-          price: 99
-        },
-        {
-          id: 2,
-          name: "Torsk",
-          price: 179
-        },
-        {
-          id: 3,
-          name: "Kolja",
-          price: 79
-        }
-      ],
-      varukorg: []
-    },
     components: {
       productList,
       varukorg
-    },
-
+    }
   })
 </script>
