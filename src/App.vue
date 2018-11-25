@@ -1,22 +1,12 @@
 <template>
   <div id="app">
-    <ProductList/>
-    <Varukorg/>
+    <div id="nav">
+      <router-link to="/">Produkter</router-link> |
+      <router-link to="/varukorg">Varukorg</router-link>
+    </div>
+    <router-view/>
   </div>
 </template>
-
-<script>
-import ProductList from './components/ProductList.vue'
-import Varukorg from './components/Varukorg.vue'
-
-export default {
-  name: 'app',
-  components: {
-    ProductList,
-    Varukorg
-  }
-}
-</script>
 
 <style>
 #app {
