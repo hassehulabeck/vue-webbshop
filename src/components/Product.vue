@@ -1,23 +1,21 @@
 <template>
-  <ul>
-    <li v-for='product in products' :key='product.id'>
-      {{ product.name }}
-      <span class='price'>
-        {{ product.price }} :-
-      </span>
-      <button @click="atc(product)">Add to cart</button>
-      <router-link :to="{ name: 'product', params: {id:product.id} }">Läs mer</router-link>
-    </li>
-  </ul>
+  <div class='product'>
+    {{ product.name }}
+    <p>{{ product.description }}</p>
+    <button @click="atc(product)">Add to cart</button>
+  </div>
 </template>
 
 <script>
 
 export default {
-  name: 'ProductList',
+  name: 'Product',
   computed: {
-    products() {
-      return this.$store.state.products
+    product() {
+      var id = this.$route.params.id;
+      return this.$store.state.products.find(function(product) {
+        return product.id == id
+      })
     }
   },
   methods: {
@@ -29,12 +27,7 @@ export default {
 </script>
 
 <style>
-ul{
-  border: thin dotted gray;
-  padding: 2em;
-  margin: 1em;
-}
-li{
+.product{
   background-color: silver;
   color: white;
   font-family: 'verdana';
@@ -43,6 +36,10 @@ li{
   padding: 1em;
   min-height: 50px;
   margin: 1em;
+}
+p{
+    font-weight: 200;
+    margin: 2em;
 }
 ul.varukorg li{
   background-color: wheat;
