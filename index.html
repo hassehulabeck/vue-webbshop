@@ -34,9 +34,10 @@
     </product-list>
     <shop-cart>
       <product-info
-        v-for='product in shopCart'
+        v-for='product, index in shopCart'
         v-bind:key='product.id'
-        v-bind:product='product'>
+        v-bind:product='product'
+        v-on:remove-from-cart="shopCart.splice(index,1)" >
       </product-info>
     </shop-cart>
 
@@ -58,6 +59,10 @@
         <button
           v-on:click="$emit('add-to-cart')">
           Add to cart
+        </button>
+        <button
+          v-on:click="$emit('remove-from-cart')">
+          Remove from cart
         </button>
 
         <p><span>
