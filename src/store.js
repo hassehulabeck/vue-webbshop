@@ -5,24 +5,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    products: [
+    users: [
       {
         id: 1,
         name: "Sten",
-        price: 10,
-        description: `Ett bra val när du har tröttnat på saxen.`
+        age: 10
       },
       {
         id: 2,
-        name: "Sax",
-        price: 10,
-        description: `Sax är den nya påsen.`
+        name: "Sara",
+        age: 11
       },
       {
         id: 3,
-        name: "Påse",
-        price: 10,
-        description: `Papper är tidlöst. Kommer alltid att slå stenen.`
+        name: "Per",
+        age: 12
       }
     ],
     varukorg: [],

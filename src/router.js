@@ -22,9 +22,17 @@ export default new Router({
       component: () => import('./views/Varukorg.vue')
     },
     {
-      path: '/product/:id',
-      name: 'product',
-      component: () => import('./views/Product.vue')
+      path: '/users',
+      name: 'users',
+      // route level code-splitting
+      // this generates a separate chunk for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('./views/Users.vue')
+    },
+    {
+      path: '/user/:name',
+      name: 'user',
+      component: () => import('./views/User.vue')
     }
    ]
 })
