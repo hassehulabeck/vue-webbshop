@@ -17,14 +17,14 @@ export default new Router({
       path: '/varukorg',
       name: 'varukorg',
       // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
+      // this generates a separate chunk for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/Varukorg.vue')
+      component: () => import('./views/Varukorg.vue')
     },
     {
       path: '/product/:id',
       name: 'product',
-      component: () => import(/* webpackChunkName: "about" */ './views/Product.vue')
+      component: () => import('./views/Product.vue')
     }
    ]
 })
